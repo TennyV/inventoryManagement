@@ -16,15 +16,9 @@
             android:name=".AddItemActivity"
                 android:label="Inventory List"
              >
+            />
+        </activity>
 
-        </activity>
-        <activity
-            android:name=".MainActivity"
-            android:exported="false" >
-            <meta-data
-                android:name="android.app.lib_name"
-                android:value="" />
-        </activity>
         <activity
             android:name=".LoginActivity"
             android:exported="false" >
@@ -33,7 +27,7 @@
                 android:value="" />
         </activity>
         <activity
-            android:name=".Settings"
+            android:name=".MainActivity"
             android:exported="true" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
