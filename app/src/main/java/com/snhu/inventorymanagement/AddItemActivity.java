@@ -31,14 +31,24 @@ public class AddItemActivity extends AppCompatActivity {
         //button listeners for add and view buttons
         addButton.setOnClickListener(v -> {
 
-            try {ItemAtttributes itemAtttributes = new ItemAtttributes(-1, inventoryAdd.getText().toString(),
+            ItemAttributes itemAttributes;
+
+            try {
+                itemAttributes = new ItemAttributes(-1, inventoryAdd.getText().toString(),
                     Integer.parseInt(addQuantity.getText().toString()));
-                Toast.makeText(AddItemActivity.this, itemAtttributes.toString(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(AddItemActivity.this, itemAttributes.toString(), Toast.LENGTH_SHORT).show();
 
             }
             catch (Exception e) {
                 Toast.makeText(AddItemActivity.this, "Error creating item", Toast.LENGTH_SHORT).show();
+                itemAttributes = new ItemAttributes(-1, "error", 0);
             }
+
+            DataBaseHelper dataBaseHelper = new DataBaseHelper(AddItemActivity.this);
+
+            boolean success = dataBaseHelper.addOne(itemAttributes);
+            Toast.makeText(AddItemActivity.this, "Success= " + success, Toast.LENGTH_SHORT).show();
+
 
         });
         subtractButton.setOnClickListener(new View.OnClickListener() {
@@ -54,4 +64,5 @@ public class AddItemActivity extends AppCompatActivity {
             }
         });
     }
+
 }

@@ -1,19 +1,18 @@
 package com.snhu.inventorymanagement;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import androidx.appcompat.app.AppCompatActivity;
+
 
 public class LoginActivity extends AppCompatActivity {
 
-    FloatingActionButton addItem;
-    RecyclerView myRecyclerView;
+    EditText username, password;
+    Button loginButton, newUserButton;
     DBHelper myDb;
 
     @Override
@@ -21,14 +20,59 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        addItem = (findViewById(R.id.floatingActionButton));
-        //myDb = new DBHelper(this);
-        myRecyclerView = findViewById(R.id.my_recycler_view);
+        username = findViewById(R.id.userName);
+        password = findViewById(R.id.passWord);
+        loginButton = findViewById(R.id.loginButton);
+        newUserButton = findViewById(R.id.newUser);
 
-        addItem.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getApplicationContext(), AddItemActivity.class);
+
+        myDb = new DBHelper(this);
+
+        newUserButton.setOnClickListener(view -> {
+            String user = username.getText().toString();
+            String pass = password.getText().toString();
+
+            if(user.equals("")||pass.equals(""))
+                Toast.makeText(LoginActivity.this, "Please enter all fields", Toast.LENGTH_SHORT).show();
+            else
+            {
+                if(user.equals(user)) {
+                    Boolean checkuser = myDb.checkUserName(user);
+                    if(!checkuser) {
+                        Boolean insert = myDb.insertData(user, pass);
+                        if(insert){
+                            Toast.makeText(LoginActivity.this,"Registered", Toast.LENGTH_SHORT).show();
+                            Intent intent = new Intent(getApplicationContext(),LoginActivity.class);
+                            startActivity(intent);
+                        }else
+                        {
+                            Toast.makeText(LoginActivity.this,"Registration Failed", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                }else
+                {
+                    Toast.makeText(LoginActivity.this, "User already exists!",Toast.LENGTH_SHORT).show();
+                }
+                if(user.equals(user) && pass.equals(pass)){
+                    Boolean checkUserAndPass = myDb.checkUserNamePassWord(user,pass);
+                    if(!checkUserAndPass) {
+
+
+                    }
+                }
+            }
+
+
+
+        });
+        loginButton.setOnClickListener(view -> {
+            String user = username.getText().toString();
+            String pass = password.getText().toString();
+
+            if(user.equals("")||pass.equals(""))
+                Toast.makeText(LoginActivity.this, "Please enter all fields", Toast.LENGTH_SHORT).show();
+            else {
+                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                 startActivity(intent);
             }
         });

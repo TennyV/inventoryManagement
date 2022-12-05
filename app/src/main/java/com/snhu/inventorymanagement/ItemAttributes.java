@@ -1,6 +1,6 @@
 package com.snhu.inventorymanagement;
 
-public class ItemAtttributes {
+public class ItemAttributes {
 
     private int id;
     private String name;
@@ -15,7 +15,7 @@ public class ItemAtttributes {
                 '}';
     }
 
-    public ItemAtttributes() {
+    public ItemAttributes() {
 
     }
 
@@ -43,7 +43,7 @@ public class ItemAtttributes {
         this.quantity = quantity;
     }
 
-    public ItemAtttributes(int id, String name, int quantity) {
+    public ItemAttributes(int id, String name, int quantity) {
         this.id = id;
         this.name = name;
         this.quantity = quantity;
