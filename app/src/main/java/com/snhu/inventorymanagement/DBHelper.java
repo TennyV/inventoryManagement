@@ -9,15 +9,18 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 
 
-
 //created the database
 public class DBHelper extends SQLiteOpenHelper {
+
     public static final String DBNAME = "Login.db";
 
+    //constructor for new class
     public DBHelper(Context context) {
         super(context, "Login.db", null, 1);
 
     }
+
+
 
     @Override  //create the table
     public void onCreate(SQLiteDatabase myDb) {

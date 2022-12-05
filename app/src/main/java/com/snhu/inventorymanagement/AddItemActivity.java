@@ -29,11 +29,17 @@ public class AddItemActivity extends AppCompatActivity {
         settingsButton = findViewById(R.id.settingsButton);
 
         //button listeners for add and view buttons
-        addButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(AddItemActivity.this, "Add Button", Toast.LENGTH_SHORT).show();
+        addButton.setOnClickListener(v -> {
+
+            try {ItemAtttributes itemAtttributes = new ItemAtttributes(-1, inventoryAdd.getText().toString(),
+                    Integer.parseInt(addQuantity.getText().toString()));
+                Toast.makeText(AddItemActivity.this, itemAtttributes.toString(), Toast.LENGTH_SHORT).show();
+
             }
+            catch (Exception e) {
+                Toast.makeText(AddItemActivity.this, "Error creating item", Toast.LENGTH_SHORT).show();
+            }
+
         });
         subtractButton.setOnClickListener(new View.OnClickListener() {
             @Override
