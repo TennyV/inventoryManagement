@@ -9,6 +9,8 @@ import android.widget.EditText;
 import android.widget.Switch;
 import android.widget.Toast;
 
+import java.util.List;
+
 public class AddItemActivity extends AppCompatActivity {
 
     Button addButton, subtractButton, settingsButton;
@@ -60,7 +62,10 @@ public class AddItemActivity extends AppCompatActivity {
         settingsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(AddItemActivity.this, "Settings Button", Toast.LENGTH_SHORT).show();
+
+                DataBaseHelper dataBaseHelper = new DataBaseHelper(AddItemActivity.this);
+                List<ItemAttributes> everyone = dataBaseHelper.getEverything();
+                Toast.makeText(AddItemActivity.this, everyone.toString(), Toast.LENGTH_SHORT).show();
             }
         });
     }
