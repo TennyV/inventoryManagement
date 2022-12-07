@@ -2,6 +2,7 @@ package com.snhu.inventorymanagement;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -13,7 +14,7 @@ public class LoginActivity extends AppCompatActivity {
 
     EditText username, password;
     Button loginButton, newUserButton;
-    DBHelper myDb;
+    DataBaseHelper db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,59 +23,57 @@ public class LoginActivity extends AppCompatActivity {
 
         username = findViewById(R.id.userName);
         password = findViewById(R.id.passWord);
+
         loginButton = findViewById(R.id.loginButton);
         newUserButton = findViewById(R.id.newUser);
 
 
-        myDb = new DBHelper(this);
+    newUserButton.setOnClickListener(new View.OnClickListener() {
+        InventoryUser newUser;
 
-        newUserButton.setOnClickListener(view -> {
-            String user = username.getText().toString();
-            String pass = password.getText().toString();
+        public void onClick(View v) {
 
-            if(user.equals("")||pass.equals(""))
-                Toast.makeText(LoginActivity.this, "Please enter all fields", Toast.LENGTH_SHORT).show();
-            else
-            {
-                if(user.equals(user)) {
-                    Boolean checkuser = myDb.checkUserName(user);
-                    if(!checkuser) {
-                        Boolean insert = myDb.insertData(user, pass);
-                        if(insert){
-                            Toast.makeText(LoginActivity.this,"Registered", Toast.LENGTH_SHORT).show();
-                            Intent intent = new Intent(getApplicationContext(),LoginActivity.class);
-                            startActivity(intent);
-                        }else
-                        {
-                            Toast.makeText(LoginActivity.this,"Registration Failed", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                }else
-                {
-                    Toast.makeText(LoginActivity.this, "User already exists!",Toast.LENGTH_SHORT).show();
-                }
-                if(user.equals(user) && pass.equals(pass)){
-                    Boolean checkUserAndPass = myDb.checkUserNamePassWord(user,pass);
-                    if(!checkUserAndPass) {
-
-
-                    }
-                }
-            }
-
-
-
-        });
-        loginButton.setOnClickListener(view -> {
-            String user = username.getText().toString();
-            String pass = password.getText().toString();
-
-            if(user.equals("")||pass.equals(""))
+            if (username.equals("") || password.equals(""))
                 Toast.makeText(LoginActivity.this, "Please enter all fields", Toast.LENGTH_SHORT).show();
             else {
-                Intent intent = new Intent(getApplicationContext(), AddItemActivity.class);
-                startActivity(intent);
+                //create user
+                newUser = new InventoryUser(-1, username.getText().toString(),
+                        password.getText().toString(), 8675309L, false);
+
+                //check to see if username is in DB
+                if(db.checkDBforUser(newUser, false)) {
+                    Toast.makeText(LoginActivity.this, "User in database.", Toast.LENGTH_SHORT).show();
+                }else
+                {
+                    boolean success = db.addUser(newUser);
+                    if(success) {
+
+                        Toast.makeText(LoginActivity.this, "Registration successful", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(LoginActivity.this, "Registered", Toast.LENGTH_SHORT).show();Intent intent = new Intent(getApplicationContext(), AddItemActivity.class);
+                        startActivity(intent);
+
+                    }   else
+                    {
+                        Toast.makeText(LoginActivity.this, "Failed!",Toast.LENGTH_SHORT).show();
+                    }
+                }
             }
-        });
-    }
+        }
+    });
+        loginButton.setOnClickListener(view -> {
+
+        if (username.equals("") || password.equals(""))
+            Toast.makeText(LoginActivity.this, "Please enter all fields", Toast.LENGTH_SHORT).show();
+        else {
+
+
+            Toast.makeText(LoginActivity.this, "Login Successful", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(getApplicationContext(), AddItemActivity.class);
+            startActivity(intent);
+        }
+    });
 }
+
+    }
+
+

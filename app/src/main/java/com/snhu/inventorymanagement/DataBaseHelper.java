@@ -20,6 +20,15 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     public static final String INVENTORY_ITEM = "INVENTORY_ITEM";
     public static final String INVENTORY_QTY = "INVENTORY_QTY";
     public static final String COLUMN_ID = "COLUMN_ID";
+    public static final String USER_TABLE = "USER_TABLE";
+    public static final String COLUMN_USER_ID = "UserID";
+    public static final String COLUMN_USER_NAME = "USER_NAME";
+    public static final String COLUMN_USER_PASSWORD = "USER_PASSWORD";
+    public static final String COLUMN_USER_PHONE_NUM = "USER_PHONE";
+    public static final String COLUMN_USER_SMS_SWITCH = "SMS_SWITCH";
+
+
+
 
     // constructor for new class
     public DataBaseHelper(Context context) {
@@ -32,7 +41,13 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         String createTableStatement = "CREATE TABLE " + INVENTORY_TABLE + " " +
                 " (" + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " + INVENTORY_ITEM + " TEXT, " + INVENTORY_QTY + " INT )";
 
+        String createUserTable = "CREATE TABLE " + USER_TABLE + " (" + COLUMN_USER_ID +
+                " INTEGER PRIMARY KEY AUTOINCREMENT, " + COLUMN_USER_NAME + " TEXT, " +
+                COLUMN_USER_PASSWORD + "TEXT, " + COLUMN_USER_PHONE_NUM + " INTEGER, " +
+                COLUMN_USER_SMS_SWITCH + " INTEGER)";
+
         db.execSQL(createTableStatement);
+        db.execSQL(createUserTable);
 
     }
 
@@ -40,7 +55,46 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("drop TABLE if exists INVENTORY_TABLE");
+        db.execSQL("drop TABLE if exists USER_TABLE");
     }
+
+    //add user to database
+    public boolean addUser (InventoryUser inventoryUser) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put(COLUMN_USER_NAME, inventoryUser.getUserName());
+        cv.put(COLUMN_USER_PASSWORD, inventoryUser.getUserPass());
+        cv.put(COLUMN_USER_PHONE_NUM, inventoryUser.getUserPhone());
+        cv.put(COLUMN_USER_SMS_SWITCH, inventoryUser.isSmsFlag());
+
+        long insert = db.insert(USER_TABLE, null, cv);
+        return insert != -1;
+    }
+
+    public boolean checkDBforUser(InventoryUser newUser, boolean userPass) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String queryString = String.format("SELECT * FROM %s WHERE %s='%s' AND %s='%s'", USER_TABLE,
+                COLUMN_USER_NAME, newUser.getUserName(), COLUMN_USER_PASSWORD, newUser.getUserPass());
+
+        if(!userPass) {
+            queryString = String.format("SELECT * FROM %s WHERE %s='%s'", USER_TABLE,
+                    COLUMN_USER_NAME, newUser.getUserName());
+        }
+        Cursor cursor = db.rawQuery(queryString, null);
+        if(cursor.moveToFirst()){
+            cursor.close();
+            db.close();
+            return true;
+        }
+        else {
+            cursor.close();
+            db.close();
+            return false;
+        }
+
+    }
+
+
 
     public boolean addOne(ItemAttributes itemAtttributes) {
         SQLiteDatabase db = this.getWritableDatabase();
