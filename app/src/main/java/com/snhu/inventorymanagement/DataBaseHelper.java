@@ -1,6 +1,7 @@
 package com.snhu.inventorymanagement;
 
 
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -38,7 +39,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     // called for backwards compatibility
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-    db.execSQL("drop TABLE if exists INVENTORY_TABLE");
+        db.execSQL("drop TABLE if exists INVENTORY_TABLE");
     }
 
     public boolean addOne(ItemAttributes itemAtttributes) {
@@ -50,45 +51,56 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 
         long insert = db.insert(INVENTORY_TABLE, null, cv);
         return insert != -1;
+    }
+    public void deleteOne(ItemAttributes itemAttributes) {
+        //find itemAttributes in the database/ if found delete and return true
+        //if not return false
+        SQLiteDatabase db = this.getWritableDatabase();
+        String queryString = "DELETE FROM " + INVENTORY_TABLE + " WHERE " + COLUMN_ID + " = " + itemAttributes.getId();
 
-         }
+        Cursor cursor = db.rawQuery(queryString, null);
+       if (cursor.moveToFirst()) {
 
-         // pull everything out of my DB
-         public List<ItemAttributes> getEverything() {
+       }
+       else {
+       }
+        cursor.close();
+        db.close();
+
+    }
+
+    // pull everything out of my DB
+    public List<ItemAttributes> getEverything() {
 
         List<ItemAttributes> returnList = new ArrayList<>();
 
         String queryString = "SELECT * FROM " + INVENTORY_TABLE;
-
         SQLiteDatabase db = this.getReadableDatabase();
 
-             Cursor cursor = db.rawQuery(queryString, null);
+        Cursor cursor = db.rawQuery(queryString, null);
 
-             if (cursor.moveToFirst()) {
-                 // loop through the cursor
-                 do {
-                     int inventoryID = cursor.getInt(0);
-                     String itemName = cursor.getString(1);
-                     int itemQuantity = cursor.getInt(2);
+        if (cursor.moveToFirst()) {
+            // loop through the cursor and create new customer objects into the return list
+            do {
+                int itemID = cursor.getInt(0);
+                String itemName = cursor.getString(1);
+                int itemQuantity = cursor.getInt(2);
 
-                     ItemAttributes newInventory = new ItemAttributes(inventoryID,itemName,itemQuantity);
-                     returnList.add(newInventory);
-                 }
-                     while (cursor.moveToNext());
+                ItemAttributes newItems = new ItemAttributes(itemID, itemName, itemQuantity);
+                returnList.add(newItems);
+            } while (cursor.moveToNext());
+        } else {
+            // do not add anything
+            cursor.close();
+            db.close();
+        }
+        cursor.close();
+        db.close();
 
-             }
-             else {
-                 //failure do not add anyhitng
-             }
 
-             cursor.close();
-             db.close();
+        return returnList;
 
-             return returnList;
-         }
-         public Cursor getdata(){
-        SQLiteDatabase DB = this.getWritableDatabase();
-        Cursor cursor = DB.rawQuery("Select * from INVENTORY_TABLE", null);
-        return cursor;
-         }
+
+    }
 }
+

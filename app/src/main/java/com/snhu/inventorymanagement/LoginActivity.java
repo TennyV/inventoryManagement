@@ -72,7 +72,7 @@ public class LoginActivity extends AppCompatActivity {
             if(user.equals("")||pass.equals(""))
                 Toast.makeText(LoginActivity.this, "Please enter all fields", Toast.LENGTH_SHORT).show();
             else {
-                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                Intent intent = new Intent(getApplicationContext(), AddItemActivity.class);
                 startActivity(intent);
             }
         });
